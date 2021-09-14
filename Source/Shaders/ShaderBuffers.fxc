@@ -1,0 +1,43 @@
+#define MAX_PLANE_NUM 8
+#define MAX_RELATED_PLANE_NUM 6
+
+cbuffer vsPerObject : register(b0)
+{
+	matrix World;
+	matrix View;
+	matrix Proj;
+};
+
+cbuffer psPerObject : register(b0)
+{
+	float4 ObjectColor;
+	float4 CameraPos;
+	float4 Roughness4;
+	float4 CustomData0;
+	float4 DiffuseColor;
+	int4 mRelatedPlanes[MAX_RELATED_PLANE_NUM];
+};
+
+cbuffer psPerFrame : register(b1)
+{
+	float3 mLightDir : packoffset(c0);
+	float mAmbient : packoffset(c0.w);
+	float LightIntensity : packoffset(c1);
+	float SpecularReflIntensity : packoffset(c1.y);
+	float DiffuseReflIntensity : packoffset(c1.z);
+	uint4 mToggleOptionsA : packoffset(c2);
+	float specularSamplingRadius : packoffset(c3);
+	float diffuseSamplingRadius : packoffset(c3.y);
+};
+
+cbuffer psPlanes : register(b2)
+{
+	// x: id, y: roughness, z: majorRadius, w, minorRadius
+	float4 plElement0[MAX_PLANE_NUM];
+	// xyz: center, w: diffuse.x
+	float4 plCenter_DifX[MAX_PLANE_NUM];
+	// xyz: normal, w: diffuse.y
+	float4 plNorm_DifY[MAX_PLANE_NUM];
+	// xyz: major axis, w : diffuse.z
+	float4 plAxis_DifZ[MAX_PLANE_NUM];
+};
